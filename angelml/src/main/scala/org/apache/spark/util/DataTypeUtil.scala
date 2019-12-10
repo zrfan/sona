@@ -5,7 +5,8 @@ import org.apache.spark.sql.types.{ArrayType, DataType, MapType, StructType}
 
 object DataTypeUtil {
   def sameType(left: DataType, right: DataType): Boolean =
-    if (SQLConf.get.caseSensitiveAnalysis) {
+//    if (SQLConf.get.caseSensitiveAnalysis) {
+    if (SQLConf.CASE_SENSITIVE.defaultValue.get){
       equalsIgnoreNullability(left, right)
     } else {
       equalsIgnoreCaseAndNullability(left, right)

@@ -34,7 +34,8 @@
     <properties>
         <scala.binary.version>2.11</scala.binary.version>
         <scala.version>2.11.8</scala.version>
-        <spark.version>2.3.0</spark.version>
+<!--        <spark.version>2.3.0</spark.version>-->
+        <spark.version>2.2.1</spark.version>
         <angel.version>3.0.1</angel.version>
         <breeze.version>0.13</breeze.version>
         <!-- Modules that copy jars to the build directory should do so under this location. -->

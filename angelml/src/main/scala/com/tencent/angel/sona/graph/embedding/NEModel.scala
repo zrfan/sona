@@ -72,7 +72,7 @@ abstract class NEModel(numNode: Int,
     * Main function for training embedding model
     */
   def train(trainBatches: Iterator[RDD[NEDataSet]],
-            negative: Int,
+            negative: Int, //负样本个数
             numEpoch: Int,
             learningRate: Float,
             checkpointInterval: Int = 10,
@@ -80,14 +80,17 @@ abstract class NEModel(numNode: Int,
     for (epoch <- 1 to numEpoch) {
 //      val alpha = learningRate * (1 - math.sqrt(epoch / numEpoch)).toFloat
       val alpha = learningRate
-      val data = trainBatches.next()
+      val data = trainBatches.next() // 全部数据的RDD,因为遍历完一遍全部数据才为一轮epoch
       val numPartitions = data.getNumPartitions
+      // 分区梯度下降、返回损失和dots长度
       val middle = data.mapPartitionsWithIndex((partitionId, iterator) =>
         sgdForPartition(partitionId, iterator, numPartitions, negative, alpha),
         preservesPartitioning = true
       ).collect()
+      //计算loss , 各batch内loss累加 / dots长度累加？？
       val loss = middle.map(f => f._1).sum / middle.map(_._2).sum.toDouble
       val array = new Array[Long](3)
+      // 计算当前epoch内计算点乘，计算梯度，梯度更新各自的耗时
       middle.foreach(f => f._3.zipWithIndex.foreach(t => array(t._2) += t._1))
       logTime(s"epoch=$epoch " +
         f"loss=$loss%2.4f " +
@@ -97,6 +100,7 @@ abstract class NEModel(numNode: Int,
         s"total=${middle.map(_._2).sum.toDouble} " +
         s"lossSum=${middle.map(_._1).sum}")
 
+      // 模型保存
       if (epoch % checkpointInterval == 0)
         save(path, epoch)
     }
@@ -143,12 +147,13 @@ abstract class NEModel(numNode: Int,
     }
   }
 
+  //分区内随机梯度下降
   def sgdForPartition(partitionId: Int,
                       iterator: Iterator[NEDataSet],
                       numPartitions: Int,
                       negative: Int,
                       alpha: Float): Iterator[(Double, Long, Array[Long])] = {
-
+    // 分批梯度下降
     def sgdForBatch(partitionId: Int,
                     seed: Int,
                     batch: NEDataSet,
@@ -156,28 +161,32 @@ abstract class NEModel(numNode: Int,
       var (start, end) = (0L, 0L)
       // dot
       start = System.currentTimeMillis()
+      // 构建点乘函数对象和参数并远程执行点乘操作
       val dots = psfGet(getDotFunc(batch, seed, negative, partitionId))
         .asInstanceOf[NEDotResult].result
       end = System.currentTimeMillis()
       val dotTime = end - start
       // gradient
       start = System.currentTimeMillis()
+      // 计算梯度损失
       val loss = doGrad(dots, negative, alpha)
       end = System.currentTimeMillis()
       val gradientTime = end - start
       // adjust
       start = System.currentTimeMillis()
+      // 构建梯度调整函数对象和参数并远程执行梯度调整操作
       psfUpdate(getAdjustFunc(batch, seed, negative, dots, partitionId))
       end = System.currentTimeMillis()
       val adjustTime = end - start
 //       return loss
       if ((batchId + 1) % 100 == 0)
         logTime(s"batchId=$batchId dotTime=$dotTime gradientTime=$gradientTime adjustTime=$adjustTime")
+      // 返回损失，dots长度，和各个阶段的耗费时间
       (loss, dots.length.toLong, Array(dotTime, gradientTime, adjustTime))
     }
 
     PSContext.instance()
-
+    // 分批随机梯度下降
     iterator.zipWithIndex.map { case (batch, index) =>
       sgdForBatch(partitionId, rand.nextInt(), batch, index)
     }

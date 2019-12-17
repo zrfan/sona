@@ -53,10 +53,10 @@ object Features {
     val strings = data.filter(f => f != null && f.length > 0)
       .map(f => f.stripLineEnd.split("[\\s+|,]")).flatMap(f => f)
       .map(t => (t, 1)).reduceByKey(_ + _).map(f => f._1)
-
+    // 字符串到索引值的映射
     val stringsWithIndex = strings.zipWithIndex().cache()
 
-
+    // 建立字符串到分区索引值的查询表
     def buildRoutingTable(index: Int, iterator: Iterator[String]): Iterator[(String, Int)] = {
       val set = new JHashSet[String]()
       while (iterator.hasNext) {
@@ -76,16 +76,18 @@ object Features {
 
       result.iterator
     }
-
+    // 字符串到索引值的映射路由表
     val routingTable = data.mapPartitionsWithIndex((partId, iterator) =>
       buildRoutingTable(partId, iterator),
       true)
 
+    // 字符串 ， 分区id，索引值  ->  分区id，字符串，索引值
     val partIndex = routingTable.join(stringsWithIndex).map { case (str, (partId, index)) =>
       (partId, (str, index))
     }.groupByKey(data.getNumPartitions)
-
+    // 绑定分区id  -> 分区id，当前分区的字符数组
     def attachPartitionId(index: Int, iterator: Iterator[String]): Iterator[(Int, Array[String])] = {
+      // 创建一个一次处理一个索引+当前迭代器数组内容的迭代器
       Iterator.single((index, iterator.toArray))
     }
 
@@ -96,12 +98,12 @@ object Features {
       for ((string, index) <- mapping) {
         map.put(string, index)
       }
-
+      // 把sentences中的字符转换成对应的index值
       sentences.filter(f => f != null && f.length > 0).map { case line =>
         line.stripLineEnd.split("[\\s+|,]").map(s => map.get(s).toInt)
       }}.flatMap(f => f)
 
-
+    // ints: 分区id，索引值数组，当前分区字符串-索引值的映射表，stringsWithIndex:索引值，对应字符
     (ints, stringsWithIndex.map(f => (f._2.toInt, f._1)))
   }
 

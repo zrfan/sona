@@ -63,6 +63,7 @@ object SubSampling {
       }
 
       PSMatrixUtils.incrementRow(freqMatrixId, 0, update)
+      // 创建一个一次处理一个元素的迭代器
       Iterator.single(0)
     }
 

@@ -51,8 +51,13 @@ class Word2VecModel(numNode: Int,
   }
 
   def train(corpus: RDD[Array[Int]], param: Param, path: String): Unit = {
+    //建立分布式模型初始化过程的参数，生成InitFunc对象
+    // psfUpdate远程执行InitFunc对象，初始化矩阵
+    // 调用父类NEModel中的getInitFunc生成InitFunc对象
     psfUpdate(getInitFunc(corpus.getNumPartitions, numNode, maxLength, param.negSample, param.windowSize))
+    // 构建数据集迭代器
     val iterator = buildDataBatches(corpus, param.batchSize)
+    // 迭代训练Word2vec模型，调用父类NEModel中的train方法
     train(iterator, param.negSample, param.numEpoch, param.learningRate, param.checkpointInterval, path)
   }
 

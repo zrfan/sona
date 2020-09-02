@@ -219,6 +219,7 @@ class AngelClassifier(override val uid: String)
     val startCreate = System.currentTimeMillis()
     angelModel.createMatrices(sparkMasterCtx)
     PSAgentContext.get().getPsAgent.refreshMatrixInfo()
+    println(s"angelModel.graph.toJsonStr=${angelModel.graph.toJsonStr}")
     val finishedCreate = System.currentTimeMillis()
     globalRunStat.setCreateTime(finishedCreate - startCreate)
 

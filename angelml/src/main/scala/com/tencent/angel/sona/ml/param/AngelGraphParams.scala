@@ -46,7 +46,7 @@ trait AngelGraphParams extends Params with AngelDataParams with HasModelType
       }
 
       val hadoopConf: Configuration = new Configuration
-      if (jsonFile.startsWith("hdfs://") || new File(jsonFile).exists()) {
+      if (jsonFile != null && !jsonFile.isEmpty && (jsonFile.startsWith("hdfs://") || new File(jsonFile).exists())) {
         JsonUtils.parseAndUpdateJson(jsonFile, sharedConf, hadoopConf)
       } else {
         throw MLException("json file not exists!")

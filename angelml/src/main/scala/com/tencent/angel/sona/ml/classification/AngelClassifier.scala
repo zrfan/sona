@@ -197,7 +197,7 @@ class AngelClassifier(override val uid: String)
     finalizeConf(psClient)
     bcConf = instances.context.broadcast(sharedConf)
     DriverContext.get().registerBroadcastVariables(bcConf)
-    bcConf.value.allKeys().foreach(p => println(s"after bcConf key=${p}, val=${bcConf.value.get(p)}"))
+    bcConf.value.allKeys().foreach(p => log.info(s"after_bcConf key=${p}, val=${bcConf.value.get(p)}"))
 
     /** *******************************************************************************************/
     implicit val dim: Long = getNumFeature
@@ -212,14 +212,18 @@ class AngelClassifier(override val uid: String)
     sparkModel.setBCValue(bcExeCtx)
 
     angelModel = sparkModel.angelModel
-    angelModel.conf.allKeys().foreach(p => println(s"after angelModel key=${p}, val=${angelModel.conf.get(p)}"))
+    angelModel.conf.allKeys().foreach(p => log.info(s"after_angelModel key=${p}, val=${angelModel.conf.get(p)}"))
 
     angelModel.buildNetwork()
 
     val startCreate = System.currentTimeMillis()
     angelModel.createMatrices(sparkMasterCtx)
+//    angelModel.getAllVariables.foreach(p => p.variableManager.)
+    
     PSAgentContext.get().getPsAgent.refreshMatrixInfo()
-    println(s"angelModel.graph.toJsonStr=${angelModel.graph.toJsonStr}")
+    val map = PSAgentContext.get().getPsAgent.getMetrics
+    map.keySet.toArray.foreach(p => log.info(s"matrix_name ${p} matrix ${map.get(p)}"))
+    log.info(s"angelModel.graph.toJsonStr=${angelModel.graph.toJsonStr}")
     val finishedCreate = System.currentTimeMillis()
     globalRunStat.setCreateTime(finishedCreate - startCreate)
 

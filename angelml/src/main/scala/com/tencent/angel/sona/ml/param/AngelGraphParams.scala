@@ -40,13 +40,15 @@ trait AngelGraphParams extends Params with AngelDataParams with HasModelType
     try {
       var jsonFile: String = getModelJsonFile
       // require(jsonFile != null && jsonFile.nonEmpty, "json file not set, please set a model json")
+      println(s"updateFromJson jsonFile=${jsonFile}")
 
       if (jsonFile == null || jsonFile.isEmpty) {
         jsonFile = sharedConf.get(AngelConf.ANGEL_ML_CONF)
       }
 
       val hadoopConf: Configuration = new Configuration
-      if (jsonFile != null && !jsonFile.isEmpty && (jsonFile.startsWith("hdfs://") || new File(jsonFile).exists())) {
+      if (jsonFile != null && !jsonFile.isEmpty
+          && (jsonFile.startsWith("hdfs://") || new File(jsonFile).exists())) {
         JsonUtils.parseAndUpdateJson(jsonFile, sharedConf, hadoopConf)
       } else {
         throw MLException("json file not exists!")

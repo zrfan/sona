@@ -21,7 +21,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tencent.angel</groupId>
     <artifactId>sona</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <packaging>pom</packaging>
     <name>Spark On Angel Project Parent POM</name>
 
@@ -34,7 +34,7 @@
     <properties>
         <scala.binary.version>2.11</scala.binary.version>
         <scala.version>2.11.8</scala.version>
-        <spark.version>2.3.0</spark.version>
+        <spark.version>2.2.1</spark.version>
         <angel.version>3.0.1</angel.version>
         <breeze.version>0.13</breeze.version>
         <!-- Modules that copy jars to the build directory should do so under this location. -->

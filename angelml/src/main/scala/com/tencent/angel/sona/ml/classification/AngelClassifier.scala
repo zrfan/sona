@@ -197,6 +197,7 @@ class AngelClassifier(override val uid: String)
     finalizeConf(psClient)
     bcConf = instances.context.broadcast(sharedConf)
     DriverContext.get().registerBroadcastVariables(bcConf)
+    bcConf.value.allKeys().foreach(p => println(s"after bcConf key=${p}, val=${bcConf.value.get(p)}"))
 
     /** *******************************************************************************************/
     implicit val dim: Long = getNumFeature
@@ -211,6 +212,7 @@ class AngelClassifier(override val uid: String)
     sparkModel.setBCValue(bcExeCtx)
 
     angelModel = sparkModel.angelModel
+    angelModel.conf.allKeys().foreach(p => println(s"after angelModel key=${p}, val=${angelModel.conf.get(p)}"))
 
     angelModel.buildNetwork()
 

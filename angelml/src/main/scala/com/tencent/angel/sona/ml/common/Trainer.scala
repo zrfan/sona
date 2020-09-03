@@ -42,6 +42,9 @@ class Trainer(bcValue: Broadcast[ExecutorContext], epoch: Int, bcConf: Broadcast
 
     val localModel = executorContext.borrowModel(bcConf.value) // those code executor on task
     println(s"trainer localModel.graph.toJsonStr=${localModel.graph.toJsonStr}")
+    val mat = localModel.getAllSlots
+    println(s"trainer mat_size=${mat.size}")
+    mat.foreach(p => println(s"trainer localModel matrix ${p._1}, ${p._2.toString}"))
 
     val graph = localModel.graph
 

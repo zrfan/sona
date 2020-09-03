@@ -247,8 +247,9 @@ class AngelClassifier(override val uid: String)
       globalRunStat.setInitTime(finishedInit - startInit)
     }
     val mat = angelModel.getAllSlots
-    log.info(s"angelModelSlots_size=${mat.size}")
+    log.info(s"angelModelMatrixSlots_size=${mat.size}")
     mat.foreach(p => log.info(s"angelModel_slots=${p._1} ${p._2.toString}"))
+    
 
     angelModel.setState(VarState.Ready)
 

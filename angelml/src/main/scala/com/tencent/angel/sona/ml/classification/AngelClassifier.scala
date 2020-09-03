@@ -222,7 +222,7 @@ class AngelClassifier(override val uid: String)
 
     val startCreate = System.currentTimeMillis()
     angelModel.createMatrices(sparkMasterCtx)
-//    angelModel.getAllVariables.foreach(p => p.variableManager.)
+    angelModel.getAllVariables.foreach(p => log.info(s"modelvariable=${p.name} ${p.variableManager.getALLVariables.toString}"))
     
     PSAgentContext.get().getPsAgent.refreshMatrixInfo()
     val map = PSAgentContext.get().getPsAgent.getMetrics
@@ -246,6 +246,9 @@ class AngelClassifier(override val uid: String)
       val finishedInit = System.currentTimeMillis()
       globalRunStat.setInitTime(finishedInit - startInit)
     }
+    val mat = angelModel.getAllSlots
+    log.info(s"angelModelSlots_size=${mat.size}")
+    mat.foreach(p => log.info(s"angelModel_slots=${p._1} ${p._2.toString}"))
 
     angelModel.setState(VarState.Ready)
 

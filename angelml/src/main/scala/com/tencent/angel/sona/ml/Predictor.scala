@@ -99,6 +99,7 @@ M <: PredictionModel[FeaturesType, M]]
     // This handles a few items such as schema validation.
     // Developers only need to implement train().
     transformSchema(dataset.schema, logging = true)
+    log.info("start_fit")
 
     // Cast LabelCol to DoubleType and keep the metadata.
     val labelMeta = dataset.schema($(labelCol)).metadata

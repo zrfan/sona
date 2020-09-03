@@ -186,17 +186,21 @@ class AngelClassifier(override val uid: String)
       case _: DenseVector =>
         setIsSparse(false)
         setDefault(modelType, RowType.T_DOUBLE_DENSE.toString)
+        log.info("example_is DenseVector")
       case iv: IntSparseVector if iv.size <= (2.0 * getModelSize) =>
         setIsSparse(true)
         setDefault(modelType, RowType.T_DOUBLE_DENSE.toString)
+        log.info("example_is IntSparseVector if iv.size <= (2.0 * getModelSize) ")
       case iv: IntSparseVector if iv.size > (2.0 * getModelSize) =>
         setIsSparse(true)
         setDefault(modelType, RowType.T_DOUBLE_SPARSE.toString)
+        log.info("example_is IntSparseVector if iv.size > (2.0 * getModelSize)")
       case _: LongSparseVector =>
         setIsSparse(true)
         setDefault(modelType, RowType.T_DOUBLE_SPARSE_LONGKEY.toString)
+        log.info("example_is LongSparseVector")
     }
-    log.info("update_sharedConf")
+    
     // update sharedConf
     finalizeConf(psClient)
     bcConf = instances.context.broadcast(sharedConf)

@@ -155,11 +155,14 @@ class AngelClassifier(override val uid: String)
           setDefault(modelType, RowType.T_DOUBLE_SPARSE_LONGKEY.toString)
       }
     }
+    log.info("afterSetModelType=", defaultParamMap.get(modelType))
     instr.logNamedValue("getModelSize=", getModelSize)
 
     // 3.3 ModelSize check && partitionStat
     val featureStats = new FeatureStats(uid, getModelType, bcExeCtx)
     val partitionStat = if (getModelSize == -1) {
+  
+      log.info("getModelSize==-1")
       // not set
       example match {
         case v: DenseVector =>
@@ -176,10 +179,13 @@ class AngelClassifier(override val uid: String)
           partitionStat_
       }
     } else {
+      log.info("getModelSize!=-1")
       // has set
       instances.mapPartitions(featureStats.partitionStats, preservesPartitioning = true)
         .reduce(featureStats.mergeMap).asScala.toMap
+      
     }
+    instr.logNamedValue("getNewModelSize=", getModelSize)
 
     // 3.4 input data format check and better modelType default value after model known
     example match {

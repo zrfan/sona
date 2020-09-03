@@ -41,6 +41,7 @@ class AngelGraphModel(conf: SharedConf, val numTask: Int) extends GraphModel(con
 
   override def buildNetwork(): this.type = {
     JsonUtils.layerFromJson(graph)
+    println(s"finish buildNetwork graph_variable=${graph.provider.variableManager.getALLVariables.mkString(",")}")
 
     this
   }

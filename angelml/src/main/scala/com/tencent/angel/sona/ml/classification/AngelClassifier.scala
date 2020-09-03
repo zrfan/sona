@@ -91,7 +91,6 @@ class AngelClassifier(override val uid: String)
 
   override protected def train(dataset: Dataset[_]): AngelClassifierModel = {
     log.info("start_train")
-    println("pstart_train")
     sparkSession = dataset.sparkSession
     sharedConf.set(ConfUtils.ALGO_TYPE, "class")
 
@@ -217,7 +216,7 @@ class AngelClassifier(override val uid: String)
     sparkModel.setBCValue(bcExeCtx)
 
     angelModel = sparkModel.angelModel
-    angelModel.conf.allKeys().foreach(p => log.info(s"after_angelModel key=${p}, val=${angelModel.conf.get(p)}"))
+    angelModel.conf.allKeys().foreach(p => log.info(s"after_angelModel conf=${p}, val=${angelModel.conf.get(p)}"))
 
     angelModel.buildNetwork()
 
@@ -227,6 +226,7 @@ class AngelClassifier(override val uid: String)
     
     PSAgentContext.get().getPsAgent.refreshMatrixInfo()
     val map = PSAgentContext.get().getPsAgent.getMetrics
+    log.info(s"PSAgent_matrix_size=${map.size()}")
     map.keySet.toArray.foreach(p => log.info(s"matrix_name ${p} matrix ${map.get(p)}"))
     log.info(s"angelModel.graph.toJsonStr=${angelModel.graph.toJsonStr}")
     val finishedCreate = System.currentTimeMillis()
@@ -251,6 +251,8 @@ class AngelClassifier(override val uid: String)
 
     /** training **********************************************************************************/
     (0 until getMaxIter).foreach { epoch =>
+        log.info(s"training epoch=${epoch}")
+      
       globalRunStat.clearStat().setAvgLoss(0.0).setNumSamples(0)
       manifoldRDD.foreach { case batch: RDD[Array[LabeledData]] =>
         // training one batch

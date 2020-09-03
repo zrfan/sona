@@ -26,9 +26,10 @@ import com.tencent.angel.mlcore.utils.JsonUtils
 import com.tencent.angel.mlcore.variable.{VariableManager, VariableProvider}
 import com.tencent.angel.mlcore.{GraphModel, PredictResult}
 import com.tencent.angel.sona.data.LocalMemoryDataBlock
+import org.apache.spark.internal.Logging
 
 
-class AngelGraphModel(conf: SharedConf, val numTask: Int) extends GraphModel(conf) {
+class AngelGraphModel(conf: SharedConf, val numTask: Int) extends GraphModel(conf) with Logging{
   private implicit val sharedConf: SharedConf = conf
   override val isSparseFormat: Boolean = conf.get(MLCoreConf.ML_IS_DATA_SPARSE, "false").toBoolean
 
@@ -41,7 +42,7 @@ class AngelGraphModel(conf: SharedConf, val numTask: Int) extends GraphModel(con
 
   override def buildNetwork(): this.type = {
     JsonUtils.layerFromJson(graph)
-    println(s"finish buildNetwork graph_variable=${graph.provider.variableManager.getALLVariables.mkString(",")}")
+    log.info(s"finish buildNetwork graph_variable=${graph.provider.variableManager.getALLVariables.mkString(",")}")
 
     this
   }

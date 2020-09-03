@@ -162,7 +162,7 @@ class AngelClassifier(override val uid: String)
     val featureStats = new FeatureStats(uid, getModelType, bcExeCtx)
     val partitionStat = if (getModelSize == -1) {
   
-      log.info("getModelSize==-1")
+      log.info("partitionStat getModelSize==-1")
       // not set
       example match {
         case v: DenseVector =>
@@ -179,7 +179,7 @@ class AngelClassifier(override val uid: String)
           partitionStat_
       }
     } else {
-      log.info("getModelSize!=-1")
+      log.info("partitionStat getModelSize!=-1")
       // has set
       instances.mapPartitions(featureStats.partitionStats, preservesPartitioning = true)
         .reduce(featureStats.mergeMap).asScala.toMap
@@ -229,6 +229,7 @@ class AngelClassifier(override val uid: String)
     angelModel.conf.allKeys().foreach(p => log.info(s"after_angelModel conf=${p}, val=${angelModel.conf.get(p)}"))
 
     angelModel.buildNetwork()
+    log.info("finish buildNetwork")
 
     val startCreate = System.currentTimeMillis()
     angelModel.createMatrices(sparkMasterCtx)

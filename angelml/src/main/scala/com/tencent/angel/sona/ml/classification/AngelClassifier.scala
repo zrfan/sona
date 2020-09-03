@@ -155,7 +155,7 @@ class AngelClassifier(override val uid: String)
           setDefault(modelType, RowType.T_DOUBLE_SPARSE_LONGKEY.toString)
       }
     }
-    log.info("afterSetModelType=", defaultParamMap.get(modelType))
+    log.info("afterSetModelType=", defaultParamMap.get(modelType).get)
     instr.logNamedValue("getModelSize=", getModelSize)
 
     // 3.3 ModelSize check && partitionStat

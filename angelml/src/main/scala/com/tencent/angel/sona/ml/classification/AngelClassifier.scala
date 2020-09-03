@@ -90,6 +90,8 @@ class AngelClassifier(override val uid: String)
   }
 
   override protected def train(dataset: Dataset[_]): AngelClassifierModel = {
+    log.info("start_train")
+    println("pstart_train")
     sparkSession = dataset.sparkSession
     sharedConf.set(ConfUtils.ALGO_TYPE, "class")
 
@@ -102,6 +104,7 @@ class AngelClassifier(override val uid: String)
 
     val numTask = instances.getNumPartitions
     psClient.setTaskNum(numTask)
+    log.info(s"get_numTask=${numTask}")
 
     bcExeCtx = instances.context.broadcast(ExecutorContext(sharedConf, numTask))
     DriverContext.get().registerBroadcastVariables(bcExeCtx)
@@ -121,15 +124,16 @@ class AngelClassifier(override val uid: String)
     if (example.size != getNumFeature && getNumFeature != -1) {
       // has set
       setNumFeatures(Math.max(example.size, getNumFeature))
-      log.info("number of feature form data and algorithm setting does not match")
+      log.info("number_of_feature form data and algorithm setting does not match")
     } else if (example.size != getNumFeature && getNumFeature == -1) {
       // not set
       setDefault(numFeature, example.size)
-      log.info("get number of feature form data")
+      log.info("get number_of_feature form data")
+      log.info("get number_of_feature form data=", numFeature)
     } else {
-      log.info("number of feature form data and algorithm setting match")
+      log.info("number_of_feature form data and algorithm setting match")
     }
-    instr.logNamedValue("NumFeatures", getNumFeature)
+    instr.logNamedValue("NumFeatures=", getNumFeature)
 
     // 3.2 better modelType default value for sona
     if (getModelSize == -1) {
@@ -152,6 +156,7 @@ class AngelClassifier(override val uid: String)
           setDefault(modelType, RowType.T_DOUBLE_SPARSE_LONGKEY.toString)
       }
     }
+    instr.logNamedValue("getModelSize=", getModelSize)
 
     // 3.3 ModelSize check && partitionStat
     val featureStats = new FeatureStats(uid, getModelType, bcExeCtx)
@@ -192,7 +197,7 @@ class AngelClassifier(override val uid: String)
         setIsSparse(true)
         setDefault(modelType, RowType.T_DOUBLE_SPARSE_LONGKEY.toString)
     }
-
+    log.info("update_sharedConf")
     // update sharedConf
     finalizeConf(psClient)
     bcConf = instances.context.broadcast(sharedConf)

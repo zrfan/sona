@@ -266,7 +266,7 @@ class AngelClassifier(override val uid: String)
 
     /** training **********************************************************************************/
     (0 until getMaxIter).foreach { epoch =>
-        log.info(s"training epoch=${epoch}")
+      println(s"training epoch=${epoch}")
       
       globalRunStat.clearStat().setAvgLoss(0.0).setNumSamples(0)
       manifoldRDD.foreach { case batch: RDD[Array[LabeledData]] =>
@@ -285,7 +285,7 @@ class AngelClassifier(override val uid: String)
       }
 
       globalRunStat.addHistLoss()
-      println(globalRunStat.printString())
+      println(s"epoch=${epoch} ${globalRunStat.printString()}")
     }
 
     /** *******************************************************************************************/

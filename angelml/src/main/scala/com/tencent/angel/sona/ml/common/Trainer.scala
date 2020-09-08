@@ -45,7 +45,7 @@ class Trainer(bcValue: Broadcast[ExecutorContext], epoch: Int, bcConf: Broadcast
     log.info(s"trainer localModel.graph.toJsonStr=${localModel.graph.toJsonStr}")
     val mat = localModel.getAllSlots
     log.info(s"trainer mat_size=${mat.size}")
-    mat.foreach(p => log.info(s"trainer localModel matrix ${p._1}, ${p._2.toString}"))
+    mat.foreach(p => println(s"trainer localModel matrix ${p._1}, ${p._2.toString}"))
 
     val graph = localModel.graph
 
@@ -75,7 +75,9 @@ class Trainer(bcValue: Broadcast[ExecutorContext], epoch: Int, bcConf: Broadcast
 
     // note: this step is asynchronous
     val pushStart = System.currentTimeMillis()
-    localModel.pushGradient(0.1)
+    val lr = bcConf.value.getString(MLCoreConf.ML_LEARN_RATE)
+    log.info(s"getLR=${lr}")
+    localModel.pushGradient(lr.toDouble)
     val pushFinished = System.currentTimeMillis()
     localRunStat.setPushTime(pushFinished - pushStart)
 

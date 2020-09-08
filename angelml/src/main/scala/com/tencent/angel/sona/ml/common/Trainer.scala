@@ -23,8 +23,9 @@ import com.tencent.angel.sona.util.ConfUtils
 import com.tencent.angel.sona.ml.evaluation.TrainingStat
 import com.tencent.angel.sona.ml.evaluation.training._
 import org.apache.spark.broadcast.Broadcast
+import org.apache.spark.internal.Logging
 
-class Trainer(bcValue: Broadcast[ExecutorContext], epoch: Int, bcConf: Broadcast[SharedConf]) extends Serializable {
+class Trainer(bcValue: Broadcast[ExecutorContext], epoch: Int, bcConf: Broadcast[SharedConf]) extends Serializable with Logging{
   @transient private lazy val executorContext: ExecutorContext = {
     bcValue.value
   }
@@ -41,9 +42,9 @@ class Trainer(bcValue: Broadcast[ExecutorContext], epoch: Int, bcConf: Broadcast
     }
 
     val localModel = executorContext.borrowModel(bcConf.value) // those code executor on task
-    println(s"trainer localModel.graph.toJsonStr=${localModel.graph.toJsonStr}")
+    log.info(s"trainer localModel.graph.toJsonStr=${localModel.graph.toJsonStr}")
     val mat = localModel.getAllSlots
-    println(s"trainer mat_size=${mat.size}")
+    log.info(s"trainer mat_size=${mat.size}")
     mat.foreach(p => println(s"trainer localModel matrix ${p._1}, ${p._2.toString}"))
 
     val graph = localModel.graph
@@ -75,7 +76,7 @@ class Trainer(bcValue: Broadcast[ExecutorContext], epoch: Int, bcConf: Broadcast
     // note: this step is asynchronous
     val pushStart = System.currentTimeMillis()
     val lr = bcConf.value.getString(MLCoreConf.ML_LEARN_RATE)
-    println(s"getLR=${lr}")
+    log.info(s"getLR=${lr}")
     localModel.pushGradient(lr.toDouble)
     val pushFinished = System.currentTimeMillis()
     localRunStat.setPushTime(pushFinished - pushStart)

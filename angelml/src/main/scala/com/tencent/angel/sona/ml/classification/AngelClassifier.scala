@@ -219,6 +219,7 @@ class AngelClassifier(override val uid: String)
     val manifoldRDD = manifoldBuilder.manifoldRDD()
 
     val globalRunStat: ClassificationTrainingStat = new ClassificationTrainingStat(getNumClass)
+    println(s"globalRunStat=${globalRunStat.printString()}")
     val sparkModel: AngelClassifierModel = copyValues(
       new AngelClassifierModel(this.uid, getModelName),
       this.extractParamMap())
@@ -226,7 +227,7 @@ class AngelClassifier(override val uid: String)
     sparkModel.setBCValue(bcExeCtx)
 
     angelModel = sparkModel.angelModel
-    angelModel.conf.allKeys().foreach(p => log.info(s"after_angelModel conf=${p}, val=${angelModel.conf.get(p)}"))
+    angelModel.conf.allKeys().foreach(p => println(s"after_angelModel conf=${p}, val=${angelModel.conf.get(p)}"))
 
     angelModel.buildNetwork()
     log.info("finish buildNetwork")
@@ -275,7 +276,8 @@ class AngelClassifier(override val uid: String)
         val runStat = batch.map(miniBatch => trainer.trainOneBatch(miniBatch))
           .reduce(TrainingStat.mergeInBatch)
         
-        println(s"test runStat=${runStat.printString()}")
+        println(s"test runStat=${runStat.printString()} ")
+        
         // those code executor on driver
         val startUpdate = System.currentTimeMillis()
         angelModel.update(epoch, 1)

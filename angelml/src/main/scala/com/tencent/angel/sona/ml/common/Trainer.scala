@@ -74,7 +74,9 @@ class Trainer(bcValue: Broadcast[ExecutorContext], epoch: Int, bcConf: Broadcast
 
     // note: this step is asynchronous
     val pushStart = System.currentTimeMillis()
-    localModel.pushGradient(0.1)
+    val lr = bcConf.value.getString("lr")
+    println(s"getLR=${lr}")
+    localModel.pushGradient(lr.toDouble)
     val pushFinished = System.currentTimeMillis()
     localRunStat.setPushTime(pushFinished - pushStart)
 

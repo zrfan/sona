@@ -274,7 +274,8 @@ class AngelClassifier(override val uid: String)
         val trainer = new Trainer(bcExeCtx, epoch, bcConf)
         val runStat = batch.map(miniBatch => trainer.trainOneBatch(miniBatch))
           .reduce(TrainingStat.mergeInBatch)
-
+        
+        println(s"test runStat=${runStat.printString()}")
         // those code executor on driver
         val startUpdate = System.currentTimeMillis()
         angelModel.update(epoch, 1)

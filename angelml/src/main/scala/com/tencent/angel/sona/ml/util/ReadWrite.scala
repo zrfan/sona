@@ -438,7 +438,9 @@ private[angel] object DefaultParamsWriter {
                     sc: SparkContext,
                     extraMetadata: Option[JObject] = None,
                     paramMap: Option[JValue] = None): Unit = {
+    println("start_saveMetadata")
     val metadataPath = new Path(path, "metadata").toString
+    println("after_make_metadataPath")
     val metadataJson = getMetadataToSave(instance, sc, extraMetadata, paramMap)
     sc.parallelize(Seq(metadataJson), 1).saveAsTextFile(metadataPath)
   }
@@ -699,7 +701,7 @@ private[angel] class FileSystemOverwrite extends Logging {
       if (shouldOverwrite) {
         logInfo(s"Path $path already exists. It will be overwritten.")
         // TODO: Revert back to the original content if save is not successful.
-        fs.delete(qualifiedOutputPath, true)
+//        fs.delete(qualifiedOutputPath, true)
       } else {
         throw new IOException(s"Path $path already exists. To overwrite it, " +
           s"please use write.overwrite().save(path) for Scala and use " +

@@ -438,7 +438,9 @@ private[angel] object DefaultParamsWriter {
                     sc: SparkContext,
                     extraMetadata: Option[JObject] = None,
                     paramMap: Option[JValue] = None): Unit = {
+    println("start_saveMetadata")
     val metadataPath = new Path(path, "metadata").toString
+    println("after_make_metadataPath")
     val metadataJson = getMetadataToSave(instance, sc, extraMetadata, paramMap)
     sc.parallelize(Seq(metadataJson), 1).saveAsTextFile(metadataPath)
   }

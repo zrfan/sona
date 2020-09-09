@@ -440,9 +440,11 @@ private[angel] object DefaultParamsWriter {
                     paramMap: Option[JValue] = None): Unit = {
     println("start_saveMetadata")
     val metadataPath = new Path(path, "metadata").toString
-    println("after_make_metadataPath")
+    println(s"after_make_metadataPath=${metadataPath}")
     val metadataJson = getMetadataToSave(instance, sc, extraMetadata, paramMap)
+    println(s"get_metadataJson=${metadataJson}")
     sc.parallelize(Seq(metadataJson), 1).saveAsTextFile(metadataPath)
+    println("finish_save_textfile")
   }
 
   /**

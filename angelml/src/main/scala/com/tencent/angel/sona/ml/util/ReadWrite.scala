@@ -178,7 +178,9 @@ abstract class MLWriter extends BaseReadWrite with Logging {
   @throws[IOException]("If the input path already exists but overwrite is not enabled.")
   def save(path: String): Unit = {
     new FileSystemOverwrite().handleOverwrite(path, shouldOverwrite, sc)
+    println("before_saveImpl")
     saveImpl(path)
+    println("after_saveImpl")
   }
 
   /**
@@ -412,6 +414,7 @@ private[angel] class DefaultParamsWriter(instance: Params) extends MLWriter {
 
   override protected def saveImpl(path: String): Unit = {
     DefaultParamsWriter.saveMetadata(instance, path, sc)
+    println("DefaultParamsWriter_after_saveMetadata")
   }
 }
 

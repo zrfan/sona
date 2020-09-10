@@ -116,7 +116,7 @@ object ConfUtils extends CompatibleLogging {
     val psClass = conf.get("spark.ps.class", classOf[ParameterServer].getName)
 
     val defaultFS = conf.get("spark.hadoop.fs.defaultFS", "file://")
-    val tempPath = defaultFS + "/user/weibo_bigdata_push/angel_stage/" + UUID.randomUUID()
+    val tempPath = defaultFS + "/tmp/spark-on-angel/" + UUID.randomUUID()
     val modelSavePath = conf.get("angel.save.model.path", defaultFS + "/user/weibo_bigdata_push/zhongrui3/dau_model/fm_train/")
 
     val psOutOverwrite = conf.getBoolean("spark.ps.out.overwrite", defaultValue = true)

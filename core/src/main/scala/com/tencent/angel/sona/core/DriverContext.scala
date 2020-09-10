@@ -153,10 +153,12 @@ object DriverContext {
 
   private def initConf(conf: Configuration): SharedConf = {
     val sharedConf = new SharedConf
+    println("DriverContext_initConf_sharedConf")
 
     // 1. parse json and update conf
     if (conf.get(AngelConf.ANGEL_ML_CONF) != null) {
       var jsonFileName = conf.get(AngelConf.ANGEL_ML_CONF)
+      println(s"angel.ml.conf jsonFileName=${jsonFileName}")
       val validateFileName = if (new File(jsonFileName).exists()) {
         jsonFileName
       } else {
@@ -165,6 +167,7 @@ object DriverContext {
 
         val file = new File(jsonFileName)
         if (file.exists()) {
+          println(s"found jsonFileName=${jsonFileName}")
           jsonFileName
         } else {
           println("File not found! ")
@@ -188,6 +191,8 @@ object DriverContext {
         sharedConf.set(key, value)
       }
     }
+    sharedConf.allKeys().foreach(p => println(s"make_sharedConf ${p} ${sharedConf.get(p)}"))
+    
 
     sharedConf
   }

@@ -82,11 +82,12 @@ class DriverContext private(val sharedConf: SharedConf, val hadoopConf: Configur
       val iter = hadoopConf.iterator()
       while (iter.hasNext) {
         val entry = iter.next()
-        println(s"hadoopConf ${entry.getKey} -> ${entry.getValue}")
+        println(s"startAngelAndPSAgent hadoopConf ${entry.getKey} -> ${entry.getValue}")
       }
-      sharedConf.allKeys().foreach(p => println(s"sharedConf ${p} -> ${sharedConf.get(p)}"))
+      sharedConf.allKeys().foreach(p => println(s"startAngelAndPSAgent sharedConf ${p} -> ${sharedConf.get(p)}"))
   
       angelClient = new AngelPSClient(hadoopConf)
+      println(s"startAngelAndPSAgent angelClient")
      
       stopAngelHookTask = new Runnable {
         def run(): Unit = doStopAngel()
@@ -153,7 +154,7 @@ object DriverContext {
 
   private def initConf(conf: Configuration): SharedConf = {
     val sharedConf = new SharedConf
-    println("DriverContext_initConf_sharedConf")
+    println(s"DriverContext_initConf_sharedConf=${conf.get(AngelConf.ANGEL_ML_CONF)}")
 
     // 1. parse json and update conf
     if (conf.get(AngelConf.ANGEL_ML_CONF) != null) {

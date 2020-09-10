@@ -201,6 +201,11 @@ object DriverContext {
     if (driverContext == null) {
       SPKSQLUtils.registerUDT()
       val hadoopConf = ConfUtils.convertToHadoop(conf)
+      val iter = hadoopConf.iterator()
+      while (iter.hasNext) {
+        val entry = iter.next()
+        println(s"hadoopConf_from_sparkConf ${entry.getKey} -> ${entry.getValue}")
+      }
       driverContext = new DriverContext(initConf(hadoopConf), hadoopConf)
     }
 

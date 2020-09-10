@@ -99,6 +99,7 @@ class DriverContext private(val sharedConf: SharedConf, val hadoopConf: Configur
       angelContext = angelClient.startPS()
       hadoopConf.set(ConfUtils.MASTER_IP, angelContext.getMasterLocation.getIp)
       hadoopConf.set(ConfUtils.MASTER_PORT, angelContext.getMasterLocation.getPort.toString)
+      println("finish_startPS")
 
       ConfUtils.merge(sharedConf, hadoopConf,
         ConfUtils.MASTER_IP, ConfUtils.MASTER_PORT, "angel", "ml", "spark.ps", "spark.hadoop")

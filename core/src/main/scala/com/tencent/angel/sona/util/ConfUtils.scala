@@ -147,7 +147,7 @@ object ConfUtils extends CompatibleLogging {
     // Set the temp path as the angel.save.model.path to fake the angel-ps system
     // The action type is also a fake setting.
     hadoopConf.set(ANGEL_ACTION_TYPE, "train")
-    hadoopConf.set(ANGEL_SAVE_MODEL_PATH, modelSavePath)
+    hadoopConf.set(ANGEL_SAVE_MODEL_PATH, tempPath)
 
     if (deployMode == "KUBERNETES") {
       hadoopConf.set(ANGEL_KUBERNETES_MASTER, master.get.substring("k8s://".length))

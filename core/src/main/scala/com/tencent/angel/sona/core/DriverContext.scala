@@ -82,10 +82,10 @@ class DriverContext private(val sharedConf: SharedConf, val hadoopConf: Configur
       angelClient = new AngelPSClient(hadoopConf)
 
       val iter = hadoopConf.iterator()
-//      while (iter.hasNext) {
-//        val entry = iter.next()
-//        println(s"${entry.getKey} -> ${entry.getValue}")
-//      }
+      while (iter.hasNext) {
+        val entry = iter.next()
+        println(s"hadoopConf ${entry.getKey} -> ${entry.getValue}")
+      }
 
       stopAngelHookTask = new Runnable {
         def run(): Unit = doStopAngel()

@@ -86,6 +86,7 @@ class DriverContext private(val sharedConf: SharedConf, val hadoopConf: Configur
         val entry = iter.next()
         println(s"hadoopConf ${entry.getKey} -> ${entry.getValue}")
       }
+     sharedConf.allKeys().foreach(p => println(s"sharedConf ${p} -> ${sharedConf.get(p)}"))
 
       stopAngelHookTask = new Runnable {
         def run(): Unit = doStopAngel()
@@ -100,6 +101,7 @@ class DriverContext private(val sharedConf: SharedConf, val hadoopConf: Configur
 
       ConfUtils.merge(sharedConf, hadoopConf,
         ConfUtils.MASTER_IP, ConfUtils.MASTER_PORT, "angel", "ml", "spark.ps", "spark.hadoop")
+      println("finish_merge_sharedConf_hadoopConf")
     }
 
     createAndInitPSAgent

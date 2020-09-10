@@ -79,15 +79,15 @@ class DriverContext private(val sharedConf: SharedConf, val hadoopConf: Configur
   def startAngelAndPSAgent(): AngelPSClient = synchronized {
 
     if (angelClient == null) {
-      angelClient = new AngelPSClient(hadoopConf)
-
       val iter = hadoopConf.iterator()
       while (iter.hasNext) {
         val entry = iter.next()
         println(s"hadoopConf ${entry.getKey} -> ${entry.getValue}")
       }
-     sharedConf.allKeys().foreach(p => println(s"sharedConf ${p} -> ${sharedConf.get(p)}"))
-
+      sharedConf.allKeys().foreach(p => println(s"sharedConf ${p} -> ${sharedConf.get(p)}"))
+  
+      angelClient = new AngelPSClient(hadoopConf)
+     
       stopAngelHookTask = new Runnable {
         def run(): Unit = doStopAngel()
       }

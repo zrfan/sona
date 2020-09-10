@@ -70,7 +70,8 @@ abstract class PSAgentContext(conf: SharedConf) extends CompatibleLogging with S
       ShutdownHookManager.get().addShutdownHook(stopAgentHookTask,
         FileSystem.SHUTDOWN_HOOK_PRIORITY + 20
       )
-
+        
+        println("start_Init_PSAgent")
       psAgent.initAndStart()
     }
 

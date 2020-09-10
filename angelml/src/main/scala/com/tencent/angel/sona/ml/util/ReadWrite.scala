@@ -706,7 +706,7 @@ private[angel] class FileSystemOverwrite extends Logging {
       if (shouldOverwrite) {
         logInfo(s"Path $path already exists. It will be overwritten.")
         // TODO: Revert back to the original content if save is not successful.
-//        fs.delete(qualifiedOutputPath, true)
+        fs.delete(qualifiedOutputPath, true)
       } else {
         throw new IOException(s"Path $path already exists. To overwrite it, " +
           s"please use write.overwrite().save(path) for Scala and use " +

@@ -47,6 +47,7 @@ object AngelSaverLoader {
       // 2. save angel model to s"angel_${instance.modelName}"
       val angelModelPath = new Path(path, "angel")
       println(s"AngelSaverLoader_saveImpl_angelModelPath=${angelModelPath.toString}")
+      println(s"AngelSaverLoader_saveImpl_angelModelPath=${MLUtils.getHDFSPath(angelModelPath.toString)}")
       instance.angelModel.saveModel(DriverContext.get().sparkMasterContext,
         MLUtils.getHDFSPath(angelModelPath.toString))
       println("AngelSaverLoader_saveImpl_afterSaveModel")

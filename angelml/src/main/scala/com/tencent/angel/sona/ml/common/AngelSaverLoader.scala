@@ -42,11 +42,14 @@ object AngelSaverLoader {
     override protected def saveImpl(path: String): Unit = {
       // 1. Save metadata and Params
       DefaultParamsWriter.saveMetadata(instance, path, sc)
+      println("AngelSaverLoader_saveImpl")
 
       // 2. save angel model to s"angel_${instance.modelName}"
       val angelModelPath = new Path(path, "angel")
+      println(s"AngelSaverLoader_saveImpl_angelModelPath=${angelModelPath.toString}")
       instance.angelModel.saveModel(DriverContext.get().sparkMasterContext,
         MLUtils.getHDFSPath(angelModelPath.toString))
+      println("AngelSaverLoader_saveImpl_afterSaveModel")
 
       try {
         val fs = angelModelPath.getFileSystem(DriverContext.get().getAngelClient.getConf)

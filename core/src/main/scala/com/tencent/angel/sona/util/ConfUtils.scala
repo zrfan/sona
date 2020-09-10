@@ -116,7 +116,8 @@ object ConfUtils extends CompatibleLogging {
     val psClass = conf.get("spark.ps.class", classOf[ParameterServer].getName)
 
     val defaultFS = conf.get("spark.hadoop.fs.defaultFS", "file://")
-    val tempPath = defaultFS + "/user/weibo_bigdata_push/zhongrui3/dau_model/" + UUID.randomUUID()
+    val tempPath = defaultFS + "/user/weibo_bigdata_push/zhongrui3/angel3/" + UUID.randomUUID()
+    val modelSavePath = conf.get("angel.save.model.path", defaultFS + "/user/weibo_bigdata_push/zhongrui3/dau_model/fm_train/")
 
     val psOutOverwrite = conf.getBoolean("spark.ps.out.overwrite", defaultValue = true)
     val psOutTmpOption = conf.getOption("spark.ps.out.tmp.path.prefix")
@@ -146,7 +147,7 @@ object ConfUtils extends CompatibleLogging {
     // Set the temp path as the angel.save.model.path to fake the angel-ps system
     // The action type is also a fake setting.
     hadoopConf.set(ANGEL_ACTION_TYPE, "train")
-    hadoopConf.set(ANGEL_SAVE_MODEL_PATH, tempPath)
+    hadoopConf.set(ANGEL_SAVE_MODEL_PATH, modelSavePath)
 
     if (deployMode == "KUBERNETES") {
       hadoopConf.set(ANGEL_KUBERNETES_MASTER, master.get.substring("k8s://".length))
